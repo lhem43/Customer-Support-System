@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI Chat Interface</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <h2>Customer Support Center</h2>
+        <textarea id="userInput" placeholder="Enter your question..." maxlength="512" oninput="updateCharCount()"></textarea>
+        <div class="char-count"><span id="charCount">0</span>/512</div>
+        <button onclick="sendMessage()">Submit</button>
+        <div id="resultBox">AI is listening...</div>
+    </div>
+
+    <script>
+        function updateCharCount() {
+            const input = document.getElementById("userInput");
+            document.getElementById("charCount").innerText = input.value.length;
+        }
+
+        function sendMessage() {
+            const inputBox = document.getElementById("userInput");
+            const resultBox = document.getElementById("resultBox");
+            const question = inputBox.value.trim();
+
+            if (!question) {
+                resultBox.innerHTML = "Please enter a question!";
+                return;
+            }
+
+            resultBox.innerHTML = "Thinking...";
+            fetch("http://localhost:3333/ask_question", {
+                method: "POST",
+                headers: {"Content-Type": "application/json"},
+                body: JSON.stringify({question})
+            })
+            .then(response => response.json())
+            .then(data => {
+                resultBox.innerHTML = (data.answer || "No response received. Check server !");
+            })
+            .catch(error => {
+                console.error("Error:", error);
+                resultBox.innerHTML = "Failed to get AI response.";
+            })
+        }
+    </script>
+</body>
+</html>

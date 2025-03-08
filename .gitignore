@@ -1,0 +1,4 @@
+node_modules
+.env
+fine_tuned_gpt2_v2
+fine_tuned_kbqa_sbert
